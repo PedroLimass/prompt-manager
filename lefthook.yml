@@ -1,0 +1,18 @@
+pre-commit:
+  commands:
+    check:
+      run: yarn prettier --write {staged_files}
+      glob: '*.{js,jsx,.mjs,ts,tsx,css,json,md}'
+      stage_fixed: true
+
+pre-push:
+  commands:
+    validate:
+      glob: '*.{ts,tsx}'
+      run: yarn typecheck
+    lint:
+      glob: '*.{ts,tsx}'
+      run: yarn lint
+    test:
+      glob: '*.{ts,tsx}'
+      run: yarn test:coverage
