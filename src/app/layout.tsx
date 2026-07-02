@@ -1,42 +1,36 @@
-import { Sidebar } from '@/components/sidebar';
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { Toaster } from 'sonner';
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import { NuqsAdapter } from "nuqs/adapters/next"
+import { ReactQueryProvider } from "./lib/react-query"
 
 export const metadata: Metadata = {
-  title: 'Prompt Manager',
-  description: 'Gerencie seus prompts',
-};
+  title: {
+    template: "%s | Product Roadmap",
+    default: "Product Roadmap",
+  },
+  description: "Follow the development progress of our entire platform.",
+}
 
-const inter = Inter({
-  variable: '--font-sans',
-  subsets: ['latin'],
-  weight: ['400', '500', '700'],
-});
+const interFont = Inter({ subsets: ["latin"] })
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
+  modal: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${inter.variable} antialiased bg-gray-900 text-white flex h-screen`}
-      >
-        <NuqsAdapter>
-          <Sidebar />
-          <main className="relative flex-1 overflow-auto min-w-0">
-            <div className="p-4 sm:p-6 md:p-8 max-w-full md:max-w-3xl mx-auto h-full">
-              {children}
-            </div>
-          </main>
-
-          <Toaster position="top-right" />
-        </NuqsAdapter>
+    <html lang="en" className={interFont.className}>
+      <body className="bg-navy-950 text-navy-50 antialiased">
+        <ReactQueryProvider>
+          <NuqsAdapter>
+            {modal}
+            {children}
+          </NuqsAdapter>
+        </ReactQueryProvider>
       </body>
     </html>
-  );
+  )
 }
