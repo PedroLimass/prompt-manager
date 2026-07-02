@@ -3,7 +3,10 @@ import { Prompt } from './prompt.entity';
 
 export interface PromptRepository {
   create(data: CreatePromptDTO): Promise<void>;
+  update(id: string, data: Partial<CreatePromptDTO>): Promise<Prompt>;
+  delete(id: string): Promise<void>;
   findMany(): Promise<Prompt[]>;
   findByTitle(title: string): Promise<Prompt | null>;
   searchMany(term: string): Promise<Prompt[]>;
+  findById(id: string): Promise<Prompt | null>;
 }
