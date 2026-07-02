@@ -1,27 +1,27 @@
-import { getIssue } from "@/http/get-issue"
-import { MoveLeftIcon } from "lucide-react"
-import type { Metadata } from "next"
-import Link from "next/link"
-import { IssueDetails } from "./issue-details"
+import { MoveLeftIcon } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { getIssue } from "@/http/get-issue";
+import { IssueDetails } from "./issue-details";
 
 interface IssuePageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }
 
 export const generateMetadata = async ({
   params,
 }: IssuePageProps): Promise<Metadata> => {
-  const { id } = await params
+  const { id } = await params;
 
-  const issue = await getIssue({ id })
+  const issue = await getIssue({ id });
 
   return {
     title: `Issue ${issue.title}`,
-  }
-}
+  };
+};
 
 export default async function IssuePage({ params }: IssuePageProps) {
-  const { id } = await params
+  const { id } = await params;
 
   return (
     <main className="max-w-[900px] mx-auto w-full flex flex-col gap-4 p-6 bg-navy-800 border-[0.5px] border-navy-500 rounded-xl">
@@ -35,5 +35,5 @@ export default async function IssuePage({ params }: IssuePageProps) {
 
       <IssueDetails issueId={id} />
     </main>
-  )
+  );
 }
