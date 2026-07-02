@@ -13,6 +13,13 @@ const eslintConfig = defineConfig([
     'build/**',
     'next-env.d.ts',
     'coverage/**',
+    // Playwright artifacts (generated, not source)
+    'playwright-report/**',
+    'test-results/**',
+    'playwright/.cache/**',
+    'blob-report/**',
+    // Prisma generated client
+    'src/generated/**',
   ]),
 ]);
 

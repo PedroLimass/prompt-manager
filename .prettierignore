@@ -9,6 +9,12 @@ build/
 # Generated files
 src/generated/prisma/
 
+# Playwright
+playwright-report/
+test-results/
+playwright/.cache/
+blob-report/
+
 # Database
 pgdata/
 
