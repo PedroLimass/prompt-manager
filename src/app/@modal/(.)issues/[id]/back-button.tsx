@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { MoveLeftIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { MoveLeftIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function BackButton() {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <button
@@ -15,5 +15,5 @@ export function BackButton() {
       <MoveLeftIcon className="size-4" />
       <span className="text-xs">Back to board</span>
     </button>
-  )
+  );
 }

@@ -1,24 +1,25 @@
-import { CommentsListResponseSchema } from "@/api/routes/list-issue-comments"
-import { clientEnv } from "@/env"
-import { fetchJson } from "./utils/fetch-json"
-import { cacheLife, cacheTag } from "next/cache"
+import { cacheLife, cacheTag } from "next/cache";
+import { CommentsListResponseSchema } from "@/api/routes/list-issue-comments";
+import { clientEnv } from "@/env";
+import { fetchJson } from "./utils/fetch-json";
+
 interface ListIssueCommentsParams {
-  issueId: string
+  issueId: string;
 }
 
 export async function listIssueComments({ issueId }: ListIssueCommentsParams) {
-  "use cache"
+  "use cache";
 
-  cacheLife("minutes")
-  cacheTag(`issue-comments-${issueId}`)
+  cacheLife("minutes");
+  cacheTag(`issue-comments-${issueId}`);
 
   const url = new URL(
     `/api/issues/${issueId}/comments`,
     clientEnv.NEXT_PUBLIC_API_URL,
-  )
+  );
 
-  const response = await fetch(url)
-  const data = await fetchJson(response)
+  const response = await fetch(url);
+  const data = await fetchJson(response);
 
-  return CommentsListResponseSchema.parse(data)
+  return CommentsListResponseSchema.parse(data);
 }

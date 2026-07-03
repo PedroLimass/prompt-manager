@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { Input } from "@/components/input"
-import { Loader2Icon, MessageCirclePlusIcon } from "lucide-react"
-import { useForm } from "react-hook-form"
-import z from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2Icon, MessageCirclePlusIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import { Input } from "@/components/input";
 
 const createCommentSchema = z.object({
   text: z.string().min(1, "Comment cannot be empty"),
-})
+});
 
-type CreateCommentSchema = z.infer<typeof createCommentSchema>
+type CreateCommentSchema = z.infer<typeof createCommentSchema>;
 
 interface IssueCommentFormProps {
-  onCreateComment: (text: string) => Promise<void>
-  isAuthenticated: boolean
+  onCreateComment: (text: string) => Promise<void>;
+  isAuthenticated: boolean;
 }
 
 export function IssueCommentForm({
@@ -28,12 +28,12 @@ export function IssueCommentForm({
     formState: { errors, isSubmitting },
   } = useForm<CreateCommentSchema>({
     resolver: zodResolver(createCommentSchema),
-  })
+  });
 
   async function handleCreateComment(data: CreateCommentSchema) {
-    await onCreateComment(data.text)
+    await onCreateComment(data.text);
 
-    reset()
+    reset();
   }
 
   return (
@@ -65,5 +65,5 @@ export function IssueCommentForm({
         )}
       </button>
     </form>
-  )
+  );
 }

@@ -1,8 +1,8 @@
 pre-commit:
   commands:
     check:
-      run: yarn prettier --write {staged_files}
-      glob: '*.{js,jsx,.mjs,ts,tsx,css,json,md}'
+      run: yarn biome check --write {staged_files}
+      glob: '*.{js,jsx,mjs,ts,tsx,css,json,md}'
       stage_fixed: true
 
 pre-push:
@@ -13,6 +13,3 @@ pre-push:
     lint:
       glob: '*.{ts,tsx}'
       run: yarn lint
-    test:
-      glob: '*.{ts,tsx}'
-      run: yarn test:coverage

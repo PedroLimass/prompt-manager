@@ -1,6 +1,6 @@
-import { Skeleton } from "@/components/skeleton"
-import { MoveLeftIcon } from "lucide-react"
-import Link from "next/link"
+import { MoveLeftIcon } from "lucide-react";
+import Link from "next/link";
+import { Skeleton } from "@/components/skeleton";
 
 export default function IssueLoading() {
   return (
@@ -30,5 +30,5 @@ export default function IssueLoading() {
         </div>
       </div>
     </main>
-  )
+  );
 }

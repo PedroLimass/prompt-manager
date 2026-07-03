@@ -1,16 +1,16 @@
-import { Suspense } from "react"
-import { ArchiveIcon } from "lucide-react"
-import { IssueCommentForm } from "./issue-comment-form"
-import { IssueCommentsList } from "./issue-comments/issue-comments-list"
-import { IssueCommentsSkeleton } from "./issue-comments/issue-comments-skeleton"
-import { IssueLikeButton } from "./issue-like-button"
-import { getIssue } from "@/http/get-issue"
-import { authClient } from "@/app/lib/auth-client"
-import { headers } from "next/headers"
-import { createComment } from "@/http/create-comment"
+import { ArchiveIcon } from "lucide-react";
+import { headers } from "next/headers";
+import { Suspense } from "react";
+import { authClient } from "@/app/lib/auth-client";
+import { createComment } from "@/http/create-comment";
+import { getIssue } from "@/http/get-issue";
+import { IssueCommentForm } from "./issue-comment-form";
+import { IssueCommentsList } from "./issue-comments/issue-comments-list";
+import { IssueCommentsSkeleton } from "./issue-comments/issue-comments-skeleton";
+import { IssueLikeButton } from "./issue-like-button";
 
 interface IssueDetailsProps {
-  issueId: string
+  issueId: string;
 }
 
 const statusLabels = {
@@ -18,23 +18,23 @@ const statusLabels = {
   todo: "To Do",
   in_progress: "In Progress",
   done: "Done",
-} as const
+} as const;
 
 export async function IssueDetails({ issueId }: IssueDetailsProps) {
-  const issue = await getIssue({ id: issueId })
+  const issue = await getIssue({ id: issueId });
 
   const { data: session } = await authClient.getSession({
     fetchOptions: {
       headers: await headers(),
     },
-  })
+  });
 
-  const isAuthenticated = !!session?.user
+  const isAuthenticated = !!session?.user;
 
   async function handleCreateComment(text: string) {
-    "use server"
+    "use server";
 
-    await createComment({ issueId, text })
+    await createComment({ issueId, text });
   }
 
   return (
@@ -70,5 +70,5 @@ export async function IssueDetails({ issueId }: IssueDetailsProps) {
         </div>
       </div>
     </>
-  )
+  );
 }

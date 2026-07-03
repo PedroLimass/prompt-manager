@@ -1,4 +1,4 @@
-import { UserButton } from "@/components/header/user-button"
+import { UserButton } from "@/components/header/user-button";
 
 export function Header() {
   return (
@@ -14,5 +14,5 @@ export function Header() {
         <UserButton />
       </div>
     </header>
-  )
+  );
 }

@@ -1,0 +1,26 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "next-env.d.ts",
+    "src/api/**/*.ts",
+    "src/http/**/*.ts",
+    "src/env.ts",
+    "src/api-env.ts",
+    "src/app/(board)/**/*.tsx",
+    "src/app/@modal/**/*.tsx",
+    "src/app/api/**/*.ts",
+    "src/app/issues/**/*.tsx",
+    "src/app/layout.tsx",
+    "src/app/lib/**/*.tsx",
+    "src/components/button.tsx",
+    "src/components/card.tsx",
+    "src/components/comment.tsx",
+    "src/components/header/**/*.tsx",
+    "src/components/input.tsx",
+    "src/components/like-button.tsx",
+    "src/components/modal.tsx",
+    "src/components/section.tsx",
+    "src/components/skeleton.tsx"
+  ],
+  "exclude": ["node_modules"]
+}

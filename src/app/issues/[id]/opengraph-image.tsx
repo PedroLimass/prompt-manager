@@ -1,15 +1,15 @@
-import { getIssue } from "@/http/get-issue"
-import { ImageResponse } from "next/og"
+import { ImageResponse } from "next/og";
+import { getIssue } from "@/http/get-issue";
 
 interface IssueImageProps {
   params: Promise<{
-    id: string
-  }>
+    id: string;
+  }>;
 }
 
 export default async function IssueImage({ params }: IssueImageProps) {
-  const { id } = await params
-  const issue = await getIssue({ id })
+  const { id } = await params;
+  const issue = await getIssue({ id });
 
   return new ImageResponse(
     <div
@@ -43,5 +43,5 @@ export default async function IssueImage({ params }: IssueImageProps) {
       width: 1200,
       height: 630,
     },
-  )
+  );
 }

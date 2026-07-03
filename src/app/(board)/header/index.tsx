@@ -1,6 +1,6 @@
-import { Suspense } from "react"
-import { UserButton } from "@/components/header/user-button"
-import { SearchInput } from "./search-input"
+import { Suspense } from "react";
+import { UserButton } from "@/components/header/user-button";
+import { SearchInput } from "./search-input";
 
 export function Header() {
   return (
@@ -20,5 +20,5 @@ export function Header() {
         <UserButton />
       </div>
     </header>
-  )
+  );
 }

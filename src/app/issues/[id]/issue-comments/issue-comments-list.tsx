@@ -1,18 +1,18 @@
-import { formatDistanceToNow } from "date-fns"
-import { Comment } from "@/components/comment"
-import { listIssueComments } from "@/http/list-issues-comments"
+import { formatDistanceToNow } from "date-fns";
+import { Comment } from "@/components/comment";
+import { listIssueComments } from "@/http/list-issues-comments";
 
 interface IssueCommentsListProps {
-  issueId: string
+  issueId: string;
 }
 
 export async function IssueCommentsList({ issueId }: IssueCommentsListProps) {
-  const { comments } = await listIssueComments({ issueId })
+  const { comments } = await listIssueComments({ issueId });
 
   if (comments.length === 0) {
     return (
       <p className="text-sm text-navy-400 text-center py-2">No comments yet.</p>
-    )
+    );
   }
 
   return (
@@ -33,8 +33,8 @@ export async function IssueCommentsList({ issueId }: IssueCommentsListProps) {
               <Comment.Text>{comment.text}</Comment.Text>
             </Comment.Content>
           </Comment.Root>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

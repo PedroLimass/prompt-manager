@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { ArchiveIcon, MessageCircleIcon } from "lucide-react"
-import { Section } from "@/components/section"
-import { Card } from "@/components/card"
-import { Button } from "@/components/button"
-import type z from "zod"
-import type { IssuesListResponseSchema } from "@/api/routes/list-issues"
-import { useQuery } from "@tanstack/react-query"
-import { getIssueInteractions } from "@/http/get-issue-interactions"
-import { useMemo } from "react"
-import { LikeButton } from "@/components/like-button"
+import { useQuery } from "@tanstack/react-query";
+import { ArchiveIcon, MessageCircleIcon } from "lucide-react";
+import { useMemo } from "react";
+import type z from "zod";
+import type { IssuesListResponseSchema } from "@/api/routes/list-issues";
+import { Button } from "@/components/button";
+import { Card } from "@/components/card";
+import { LikeButton } from "@/components/like-button";
+import { Section } from "@/components/section";
+import { getIssueInteractions } from "@/http/get-issue-interactions";
 
 interface BoardContentProps {
-  issues: z.infer<typeof IssuesListResponseSchema>
+  issues: z.infer<typeof IssuesListResponseSchema>;
 }
 
 export function BoardContent({ issues }: BoardContentProps) {
@@ -21,18 +21,18 @@ export function BoardContent({ issues }: BoardContentProps) {
     ...issues.todo.map((issue) => issue.id),
     ...issues.in_progress.map((issue) => issue.id),
     ...issues.done.map((issue) => issue.id),
-  ]
+  ];
 
   const { data: interactionsData, isLoading: isLoadingInteractions } = useQuery(
     {
       queryKey: ["issue-likes", allIssuesIds.sort().join(",")],
       queryFn: () => getIssueInteractions({ issueIds: allIssuesIds }),
     },
-  )
+  );
 
   const interactions = useMemo(() => {
     if (!interactionsData) {
-      return new Map<string, { isLiked: boolean; likesCount: number }>()
+      return new Map<string, { isLiked: boolean; likesCount: number }>();
     }
 
     return new Map<string, { isLiked: boolean; likesCount: number }>(
@@ -43,8 +43,8 @@ export function BoardContent({ issues }: BoardContentProps) {
           likesCount: interaction.likesCount,
         },
       ]),
-    )
-  }, [interactionsData])
+    );
+  }, [interactionsData]);
 
   return (
     <main className="grid grid-cols-4 gap-5 flex-1 items-stretch">
@@ -68,7 +68,7 @@ export function BoardContent({ issues }: BoardContentProps) {
             </div>
           ) : (
             issues.backlog.map((issue) => {
-              const interaction = interactions.get(issue.id)
+              const interaction = interactions.get(issue.id);
 
               return (
                 <Card.Root href={`/issues/${issue.id}`} key={issue.id}>
@@ -89,7 +89,7 @@ export function BoardContent({ issues }: BoardContentProps) {
                     </Button>
                   </Card.Footer>
                 </Card.Root>
-              )
+              );
             })
           )}
         </Section.Content>
@@ -115,7 +115,7 @@ export function BoardContent({ issues }: BoardContentProps) {
             </div>
           ) : (
             issues.todo.map((issue) => {
-              const interaction = interactions.get(issue.id)
+              const interaction = interactions.get(issue.id);
 
               return (
                 <Card.Root href={`/issues/${issue.id}`} key={issue.id}>
@@ -136,7 +136,7 @@ export function BoardContent({ issues }: BoardContentProps) {
                     </Button>
                   </Card.Footer>
                 </Card.Root>
-              )
+              );
             })
           )}
         </Section.Content>
@@ -162,7 +162,7 @@ export function BoardContent({ issues }: BoardContentProps) {
             </div>
           ) : (
             issues.in_progress.map((issue) => {
-              const interaction = interactions.get(issue.id)
+              const interaction = interactions.get(issue.id);
               return (
                 <Card.Root href={`/issues/${issue.id}`} key={issue.id}>
                   <Card.Header>
@@ -182,7 +182,7 @@ export function BoardContent({ issues }: BoardContentProps) {
                     </Button>
                   </Card.Footer>
                 </Card.Root>
-              )
+              );
             })
           )}
         </Section.Content>
@@ -208,7 +208,7 @@ export function BoardContent({ issues }: BoardContentProps) {
             </div>
           ) : (
             issues.done.map((issue) => {
-              const interaction = interactions.get(issue.id)
+              const interaction = interactions.get(issue.id);
 
               return (
                 <Card.Root href={`/issues/${issue.id}`} key={issue.id}>
@@ -229,11 +229,11 @@ export function BoardContent({ issues }: BoardContentProps) {
                     </Button>
                   </Card.Footer>
                 </Card.Root>
-              )
+              );
             })
           )}
         </Section.Content>
       </Section.Root>
     </main>
-  )
+  );
 }

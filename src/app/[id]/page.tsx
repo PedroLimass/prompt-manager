@@ -1,6 +1,6 @@
-import { PromptForm } from '@/components/prompts';
-import { PrismaPromptRepository } from '@/infra/repository/prisma-prompt.repository';
-import { prisma } from '@/lib/prisma';
+import { PromptForm } from "@/components/prompts";
+import { PrismaPromptRepository } from "@/infra/repository/prisma-prompt.repository";
+import { prisma } from "@/lib/prisma";
 
 type PromptPageProps = {
   params: Promise<{

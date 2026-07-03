@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/skeleton"
+import { Skeleton } from "@/components/skeleton";
 
 export function IssueCommentsSkeleton() {
   return (
@@ -21,8 +21,8 @@ export function IssueCommentsSkeleton() {
               </div>
             </div>
           </div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { SearchIcon } from "lucide-react"
-import { debounce, parseAsString, useQueryState } from "nuqs"
-import { Input } from "@/components/input"
+import { SearchIcon } from "lucide-react";
+import { debounce, parseAsString, useQueryState } from "nuqs";
+import { Input } from "@/components/input";
 
 export function SearchInput() {
   const [search, setSearch] = useQueryState(
@@ -10,13 +10,13 @@ export function SearchInput() {
     parseAsString.withDefault("").withOptions({
       shallow: false,
     }),
-  )
+  );
 
   function handleSearchUpdate(event: React.ChangeEvent<HTMLInputElement>) {
     setSearch(event.target.value, {
       limitUrlUpdates:
         event.target.value.length !== 0 ? debounce(500) : undefined,
-    })
+    });
   }
 
   return (
@@ -31,5 +31,5 @@ export function SearchInput() {
         onChange={handleSearchUpdate}
       />
     </div>
-  )
+  );
 }

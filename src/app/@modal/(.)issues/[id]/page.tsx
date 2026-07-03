@@ -1,14 +1,14 @@
-import { Modal } from "@/components/modal"
-import { BackButton } from "./back-button"
-import { DialogTitle } from "@radix-ui/react-dialog"
-import { IssueDetails } from "@/app/issues/[id]/issue-details"
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { IssueDetails } from "@/app/issues/[id]/issue-details";
+import { Modal } from "@/components/modal";
+import { BackButton } from "./back-button";
 
 interface IssuePageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }
 
 export default async function IssueModal({ params }: IssuePageProps) {
-  const { id } = await params
+  const { id } = await params;
 
   return (
     <Modal>
@@ -20,5 +20,5 @@ export default async function IssueModal({ params }: IssuePageProps) {
         <IssueDetails issueId={id} />
       </div>
     </Modal>
-  )
+  );
 }
