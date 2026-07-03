@@ -22,8 +22,8 @@ export default function RootLayout({
   modal: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={interFont.className}>
-      <body className="bg-navy-950 text-navy-50 antialiased">
+    <html lang="en" className={interFont.className} suppressHydrationWarning>
+      <body className="bg-navy-950 text-navy-50 antialiased" suppressHydrationWarning>
         <ReactQueryProvider>
           <NuqsAdapter>
             {modal}

@@ -1,5 +1,6 @@
 import { CommentsListResponseSchema } from "@/api/routes/list-issue-comments"
 import { clientEnv } from "@/env"
+import { fetchJson } from "./utils/fetch-json"
 import { cacheLife, cacheTag } from "next/cache"
 interface ListIssueCommentsParams {
   issueId: string
@@ -17,7 +18,7 @@ export async function listIssueComments({ issueId }: ListIssueCommentsParams) {
   )
 
   const response = await fetch(url)
-  const data = await response.json()
+  const data = await fetchJson(response)
 
   return CommentsListResponseSchema.parse(data)
 }

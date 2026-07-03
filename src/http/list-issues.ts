@@ -1,6 +1,7 @@
 import { cacheLife } from "next/cache";
 import { IssuesListResponseSchema } from "@/api/routes/list-issues";
 import { clientEnv } from "@/env";
+import { fetchJson } from "./utils/fetch-json";
 
 interface ListIssuesParams {
   search?: string;
@@ -18,7 +19,7 @@ export async function listIssues({ search }: ListIssuesParams = {}) {
   }
 
   const response = await fetch(url);
-  const data = await response.json();
+  const data = await fetchJson(response);
 
   return IssuesListResponseSchema.parse(data);
 }

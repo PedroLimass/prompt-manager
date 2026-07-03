@@ -1,97 +1,35 @@
-# Prompt Manager
+# Future Board
 
-Aplicação web para **criar, listar, buscar, editar e excluir prompts** de forma simples. O projeto segue uma arquitetura em camadas (domínio, aplicação, infraestrutura e interface) sobre **Next.js App Router**, com persistência em **PostgreSQL** via **Prisma 7**.
-
-## Funcionalidades
-
-- Listagem de prompts na sidebar, ordenada por data de criação
-- Busca por título ou conteúdo (sincronizada com a URL via query `?q=`)
-- Criação de novos prompts em `/new`
-- Visualização e edição em `/[id]`
-- Exclusão com confirmação (dialog)
-- Cópia do conteúdo do prompt para a área de transferência
-- Feedback visual com toasts (Sonner)
-- Layout responsivo com sidebar colapsável e menu mobile
+Aplicação de **Product Roadmap** estilo kanban: issues organizadas por status, comentários, likes e autenticação via GitHub. Construída com **Next.js App Router**, API **Hono** e **PostgreSQL** via **Drizzle ORM**.
 
 ## Stack
 
-| Camada          | Tecnologias                                                |
-| --------------- | ---------------------------------------------------------- |
-| Frontend        | Next.js 16, React 19, TypeScript, Tailwind CSS 4           |
-| UI              | shadcn/ui, Radix UI, Lucide, Motion, Sonner                |
-| Formulários     | React Hook Form, Zod, `@hookform/resolvers`                |
-| Estado na URL   | nuqs                                                       |
-| Backend / dados | Server Actions, Prisma 7, PostgreSQL, `@prisma/adapter-pg` |
-| Testes          | Jest, Testing Library, Playwright                          |
-| Qualidade       | ESLint, Prettier, Lefthook                                 |
-
-## Arquitetura
-
-O código em `src/` está organizado por responsabilidade:
-
-```
-src/
-├── app/                    # Rotas, layout e Server Actions
-├── components/             # Componentes de interface (UI, sidebar, prompts…)
-├── core/
-│   ├── domain/             # Entidades e contratos (ex.: PromptRepository)
-│   └── application/        # Casos de uso e DTOs (Zod)
-├── infra/
-│   └── repository/         # Implementações concretas (Prisma)
-├── lib/                    # Utilitários (Prisma client, test-utils)
-├── generated/prisma/       # Cliente Prisma gerado (não editar)
-└── tests/                  # Testes unitários e de integração (Jest)
-```
-
-### Fluxo de uma operação
-
-```mermaid
-flowchart LR
-  UI[Componente / Formulário] --> Action[Server Action]
-  Action --> UC[Caso de uso]
-  UC --> Repo[PromptRepository]
-  Repo --> Prisma[Prisma + PostgreSQL]
-  Action --> Revalidate[revalidatePath]
-```
-
-**Exemplo (criar prompt):** `PromptForm` → `createPromptAction` → `CreatePromptUseCase` → `PrismaPromptRepository` → tabela `prompts`.
-
-### Casos de uso
-
-| Caso de uso | Arquivo                                               |
-| ----------- | ----------------------------------------------------- |
-| Criar       | `core/application/prompts/create-prompt.use-case.ts`  |
-| Atualizar   | `core/application/prompts/update-prompt.use-case.ts`  |
-| Excluir     | `core/application/prompts/delete-prompt.use-case.ts`  |
-| Buscar      | `core/application/prompts/search-prompts.use-case.ts` |
-
-### Rotas
-
-| Rota    | Descrição                                       |
-| ------- | ----------------------------------------------- |
-| `/`     | Estado inicial — pede para selecionar um prompt |
-| `/new`  | Formulário de criação                           |
-| `/[id]` | Formulário de edição do prompt                  |
+| Camada    | Tecnologias                                      |
+| --------- | ------------------------------------------------ |
+| Frontend  | Next.js 16, React 19, TypeScript, Tailwind CSS 4 |
+| UI        | Radix UI, Lucide, React Query, nuqs              |
+| API       | Hono, OpenAPI, Scalar                            |
+| Auth      | Better Auth (GitHub OAuth)                       |
+| Banco     | PostgreSQL, Drizzle ORM                          |
+| Qualidade | Biome                                            |
 
 ## Pré-requisitos
 
-- **Node.js** 20+ (recomendado)
-- **Yarn** 1.x (classic)
-- **Docker** e **Docker Compose** (para o PostgreSQL local)
+- **Node.js** 20+
+- **Yarn** 1.x
+- **Docker** e **Docker Compose**
 
 ## Configuração
 
-### 1. Clonar e instalar dependências
+### 1. Instalar dependências
 
 ```bash
 yarn install
 ```
 
-O script `postinstall` roda `prisma generate` automaticamente.
-
 ### 2. Variáveis de ambiente
 
-Copie o exemplo e ajuste se necessário:
+Copie o exemplo e preencha os valores:
 
 ```bash
 cp .env.example .env
@@ -100,16 +38,22 @@ cp .env.example .env
 Conteúdo esperado:
 
 ```env
-DATABASE_URL="postgresql://postgres:password@localhost:5432/rocketseat_prompt_manager"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/board"
+NEXT_PUBLIC_API_URL="http://localhost:3000"
+BETTER_AUTH_SECRET="sua-chave-secreta-com-pelo-menos-32-caracteres"
+BETTER_AUTH_URL="http://localhost:3000"
+GITHUB_CLIENT_ID="seu-client-id"
+GITHUB_CLIENT_SECRET="seu-client-secret"
 ```
 
-> **Importante (Prisma 7):** use URL **`postgresql://`** direta. URLs no formato `prisma+postgres://` (Prisma Dev) **não** funcionam com `@prisma/adapter-pg`.
-
-Variável opcional para o seed:
-
-```env
-E2E_SEED_COUNT=20
-```
+| Variável               | Descrição                                              |
+| ---------------------- | ------------------------------------------------------ |
+| `DATABASE_URL`         | Conexão PostgreSQL (ver porta abaixo)                  |
+| `NEXT_PUBLIC_API_URL`  | URL base da API (em dev: `http://localhost:3000`)      |
+| `BETTER_AUTH_SECRET`   | Segredo do Better Auth (mínimo 32 caracteres)          |
+| `BETTER_AUTH_URL`      | URL pública da app (em dev: `http://localhost:3000`)   |
+| `GITHUB_CLIENT_ID`     | OAuth App do GitHub                                    |
+| `GITHUB_CLIENT_SECRET` | OAuth App do GitHub                                    |
 
 ### 3. Subir o banco (Docker)
 
@@ -119,141 +63,88 @@ docker compose up -d
 
 Credenciais padrão (ver `docker-compose.yml`):
 
-- **Usuário:** `postgres`
-- **Senha:** `password`
-- **Banco:** `rocketseat_prompt_manager`
-- **Porta:** `5432`
+| Campo    | Valor      |
+| -------- | ---------- |
+| Usuário  | `postgres` |
+| Senha    | `postgres` |
+| Banco    | `board`    |
+| **Porta**| **`5433`** |
 
-### 4. Migrações
+> **Importante — porta 5433, não 5432**
+>
+> O Postgres do projeto usa a porta **5433** no host para evitar conflito com outros containers PostgreSQL que costumam ocupar a `5432` (ex.: outros projetos locais). Se o `DATABASE_URL` apontar para `5432`, a API retorna **500 Internal Server Error** e a página quebra com erro de JSON no console.
+>
+> Sintomas quando a porta está errada:
+> - `Unexpected token 'I', "Internal S"... is not valid JSON`
+> - `password authentication failed for user "postgres"` ao rodar `yarn db:migrate`
+>
+> Para confirmar que o container está exposto corretamente:
+>
+> ```bash
+> docker port board-postgres
+> # deve mostrar: 5432/tcp -> 0.0.0.0:5433
+> ```
+
+### 4. Migrações e seed
 
 ```bash
 yarn db:migrate
-```
-
-### 5. Seed (opcional)
-
-Popula o banco com prompts fictícios (Faker):
-
-```bash
 yarn db:seed
 ```
 
-## Executando a aplicação
+O seed popula o banco com issues e comentários fictícios para desenvolvimento.
+
+### 5. Rodar a aplicação
 
 ```bash
-# Desenvolvimento
 yarn dev
-
-# Build de produção
-yarn build
-yarn start
 ```
 
 Acesse [http://localhost:3000](http://localhost:3000).
 
+> Após alterar o `.env` (especialmente `DATABASE_URL`), **reinicie o dev server** para as variáveis serem recarregadas.
+
+Documentação da API: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
+
 ## Scripts disponíveis
 
-| Script               | Descrição                               |
-| -------------------- | --------------------------------------- |
-| `yarn dev`           | Servidor de desenvolvimento (Turbopack) |
-| `yarn build`         | Build de produção                       |
-| `yarn start`         | Servidor após o build                   |
-| `yarn typecheck`     | Checagem TypeScript                     |
-| `yarn lint`          | ESLint                                  |
-| `yarn format`        | Prettier em todo o projeto              |
-| `yarn test`          | Testes Jest                             |
-| `yarn test:watch`    | Jest em modo watch                      |
-| `yarn test:coverage` | Jest com cobertura                      |
-| `yarn test:e2e`      | Testes Playwright                       |
-| `yarn test:e2e:ui`   | Playwright com UI                       |
-| `yarn db:generate`   | Gera o cliente Prisma                   |
-| `yarn db:migrate`    | Cria/aplica migrações (`migrate dev`)   |
-| `yarn db:seed`       | Executa `prisma/seed.ts`                |
-| `yarn db:studio`     | Abre o Prisma Studio                    |
+| Script             | Descrição                        |
+| ------------------ | -------------------------------- |
+| `yarn dev`         | Servidor de desenvolvimento      |
+| `yarn build`       | Build de produção                |
+| `yarn start`       | Servidor após o build            |
+| `yarn lint`        | Biome check                      |
+| `yarn format`      | Biome format                     |
+| `yarn db:generate` | Gera migrações Drizzle           |
+| `yarn db:migrate`  | Aplica migrações                 |
+| `yarn db:push`     | Push do schema direto no banco   |
+| `yarn db:seed`     | Popula o banco com dados de teste|
+| `yarn db:studio`   | Abre o Drizzle Studio            |
 
-## Banco de dados e Prisma
+## Estrutura do projeto
 
-- **Schema:** `prisma/schema.prisma`
-- **Configuração (Prisma 7):** `prisma.config.ts` — URL de conexão e comando de seed
-- **Migrações:** `prisma/migrations/`
-- **Seed:** `prisma/seed.ts` (comando configurado em `migrations.seed`)
-
-O cliente é gerado em `src/generated/prisma` e instanciado em `src/lib/prisma.ts` com o adapter PostgreSQL:
-
-```ts
-new PrismaClient({ adapter: new PrismaPg(process.env.DATABASE_URL) });
 ```
-
-### Modelo `Prompt`
-
-| Campo (Prisma) | Coluna (DB)  | Observação  |
-| -------------- | ------------ | ----------- |
-| `id`           | `id`         | CUID        |
-| `title`        | `title`      | Único       |
-| `content`      | `content`    | Texto longo |
-| `createdAt`    | `created_at` |             |
-| `updatedAt`    | `updated_at` |             |
-
-Tabela mapeada: `prompts`.
-
-## Testes
-
-### Testes unitários e de componente (Jest)
-
-```bash
-yarn test
-yarn test:coverage
+src/
+├── api/              # API Hono (rotas, auth, schema Drizzle)
+├── app/
+│   ├── (board)/      # Página principal do kanban
+│   ├── issues/       # Detalhes da issue
+│   └── api/          # Route handler Next.js → Hono
+├── components/       # Componentes de UI
+├── http/             # Clientes HTTP (fetch para a API)
+└── env.ts            # Variáveis de ambiente do client
 ```
-
-Os testes ficam em `src/tests/`, espelhando a estrutura de `src/` (actions, componentes, casos de uso, repositório).
-
-Utilitário de render: `src/lib/test-utils.tsx` (reexporta Testing Library com `render` customizado).
-
-### Testes end-to-end (Playwright)
-
-```bash
-# Instalar browsers (primeira vez)
-npx playwright install
-
-yarn test:e2e
-```
-
-- Specs em `e2e/`
-- `playwright.config.ts` sobe `yarn dev` automaticamente
-- `e2e/global-setup.ts` tenta rodar o seed antes dos testes (se `DATABASE_URL` estiver definida)
-
-## Git hooks (Lefthook)
-
-| Hook           | Ação                                   |
-| -------------- | -------------------------------------- |
-| **pre-commit** | `prettier --write` nos arquivos staged |
-| **pre-push**   | `typecheck`, `lint` e `test:coverage`  |
-
-Instalar hooks (se ainda não estiver ativo):
-
-```bash
-npx lefthook install
-```
-
-## Convenções do projeto
-
-- **Server Actions** em `src/app/actions/` — ponto de entrada HTTP/RSC para mutações e buscas
-- **Validação** com Zod nos DTOs (`create-prompt.dto.ts`, `update-prompt.dto.ts`)
-- **Revalidação** de cache com `revalidatePath('/', 'layout')` após criar/atualizar/excluir
-- **Alias de import:** `@/*` → `src/*` (ver `tsconfig.json`)
-- **Componentes UI base:** `src/components/ui/` (gerados/adaptados do shadcn)
 
 ## Solução de problemas
 
-| Problema                                  | Causa provável                      | Solução                                                     |
-| ----------------------------------------- | ----------------------------------- | ----------------------------------------------------------- |
-| `DATABASE_URL is not set`                 | `.env` ausente ou vazio             | Criar `.env` a partir de `.env.example`                     |
-| `Can't reach database server`             | Postgres parado ou URL errada       | `docker compose up -d` e conferir porta `5432`              |
-| `The table public.prompts does not exist` | Migrações não aplicadas             | `yarn db:migrate`                                           |
-| `@prisma/client did not initialize`       | Cliente não gerado ou import errado | `yarn db:generate`; importar de `@/generated/prisma/client` |
-| Erro com `prisma+postgres://`             | URL do Prisma Dev                   | Trocar por `postgresql://...` no `.env`                     |
-| `No seed command configured`              | Seed não declarado                  | Já configurado em `prisma.config.ts` → `tsx prisma/seed.ts` |
-| Playwright sem dados                      | Seed falhou no setup                | Verificar Docker + `DATABASE_URL` antes de `yarn test:e2e`  |
+| Problema | Causa provável | Solução |
+| -------- | -------------- | ------- |
+| `Unexpected token 'I', "Internal S"... is not valid JSON` | API retornou erro 500 em texto puro (banco inacessível) | Verificar Docker, porta **5433** no `.env` e reiniciar `yarn dev` |
+| `password authentication failed for user "postgres"` | `DATABASE_URL` aponta para outro Postgres na 5432 | Usar porta **5433** e credenciais `postgres`/`postgres` |
+| `board-postgres` sem porta no host | Porta 5432 já ocupada por outro container | Parar o outro Postgres ou manter a **5433** do `docker-compose.yml` |
+| Página em branco / board vazio | Migrações ou seed não rodados | `yarn db:migrate && yarn db:seed` |
+| Aviso de hydration mismatch no `<html>` | Extensão do navegador (ex.: LanguageTool) altera o DOM | Inofensivo em dev; ou testar em aba anônima |
+| Variáveis de ambiente ignoradas | Dev server iniciado antes de criar/editar `.env` | Parar e rodar `yarn dev` novamente |
 
 ## Licença
 

@@ -1,5 +1,6 @@
 import { IssueInteractionsResponseSchema } from "@/api/routes/schemas/issue-interactions"
 import { clientEnv } from "@/env"
+import { fetchJson } from "./utils/fetch-json"
 
 interface GetIssueInteractionsParams {
   issueIds: string[]
@@ -15,7 +16,7 @@ export async function getIssueInteractions({
   const response = await fetch(url, {
     credentials: "include",
   })
-  const data = await response.json()
+  const data = await fetchJson(response)
 
   return IssueInteractionsResponseSchema.parse(data)
 }
