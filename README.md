@@ -19,7 +19,68 @@ Aplicação de **Product Roadmap** estilo kanban: issues organizadas por status,
 - **Yarn** 1.x
 - **Docker** e **Docker Compose**
 
-## Configuração
+## Início rápido (Docker + banco + seed)
+
+Na raiz do projeto:
+
+```bash
+# 1. Dependências
+yarn install
+
+# 2. Variáveis de ambiente
+cp .env.example .env
+
+# 3. Subir o PostgreSQL no Docker (segundo plano)
+docker compose up -d
+
+# 4. Conferir se o container está rodando
+docker compose ps
+
+# 5. Criar/aplicar tabelas no banco
+yarn db:migrate
+
+# 6. Popular o banco com dados de exemplo (opcional)
+yarn db:seed
+
+# 7. Rodar a aplicação
+yarn dev
+```
+
+### Docker — comandos úteis
+
+```bash
+# Subir o banco
+docker compose up -d
+
+# Ver status e logs
+docker compose ps
+docker compose logs postgres
+
+# Parar (mantém os dados no volume)
+docker compose down
+
+# Parar e apagar todos os dados do banco
+docker compose down -v
+```
+
+O serviço sobe um **PostgreSQL 17** com:
+
+| Item    | Valor      |
+| ------- | ---------- |
+| Usuário | `postgres` |
+| Senha   | `postgres` |
+| Banco   | `board`    |
+| Porta   | `5433` no host → `5432` no container |
+
+A `DATABASE_URL` no `.env` **precisa usar a mesma porta do host**:
+
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/board"
+```
+
+> Se a porta `5433` já estiver em uso, altere em `docker-compose.yml` (ex.: `5434:5432`) e atualize o `.env` com a mesma porta.
+
+## Configuração (detalhes)
 
 ### 1. Instalar dependências
 
@@ -54,6 +115,8 @@ GITHUB_CLIENT_SECRET="seu-client-secret"
 | `BETTER_AUTH_URL`      | URL pública da app (em dev: `http://localhost:3000`)   |
 | `GITHUB_CLIENT_ID`     | OAuth App do GitHub                                    |
 | `GITHUB_CLIENT_SECRET` | OAuth App do GitHub                                    |
+
+> Passos resumidos de Docker e seed: veja [Início rápido](#início-rápido-docker--banco--seed).
 
 ### 3. Subir o banco (Docker)
 
